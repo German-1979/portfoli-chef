@@ -1,47 +1,111 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Project } from '@/types';
+import { ProjectsService } from '@/services/projectsService';
+import { setRefreshProjectsCallback } from '@/hooks/useGitHubIntegration';
 
 interface ProjectsContextType {
   projects: Project[];
-  addProject: (project: Omit<Project, 'id'>) => void;
-  updateProject: (id: string, project: Partial<Project>) => void;
-  deleteProject: (id: string) => void;
+  loading: boolean;
+  error: string | null;
+  addProject: (project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
+  updateProject: (id: string, project: Partial<Project>) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
+  refreshProjects: () => Promise<void>;
 }
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
 
 export function ProjectsProvider({ children }: { children: React.ReactNode }) {
-  const [projects, setProjects] = useState<Project[]>(() => {
-    const stored = localStorage.getItem('projects');
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  const loadProjects = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await ProjectsService.getAllProjects();
+      setProjects(data);
+      console.log('Proyectos cargados:', data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al cargar proyectos');
+      console.error('Error loading projects:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Cargar proyectos al inicializar
   useEffect(() => {
-    localStorage.setItem('projects', JSON.stringify(projects));
-  }, [projects]);
-
-  const addProject = (project: Omit<Project, 'id'>) => {
-    const newProject: Project = {
-      ...project,
-      id: crypto.randomUUID(),
+    loadProjects();
+    // Registrar callback para refrescar proyectos desde GitHub
+    setRefreshProjectsCallback(loadProjects);
+    console.log('Callback de refrescar proyectos registrado');
+    
+    // Listener para evento de refrescar proyectos
+    const handleProjectsRefresh = () => {
+      console.log('📡 Evento de refrescar proyectos recibido');
+      loadProjects();
     };
-    setProjects(prev => [...prev, newProject]);
+    
+    window.addEventListener('projects-refresh', handleProjectsRefresh);
+    
+    return () => {
+      window.removeEventListener('projects-refresh', handleProjectsRefresh);
+    };
+  }, []);
+
+  const addProject = async (project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
+    try {
+      setError(null);
+      const newProject = await ProjectsService.createProject(project);
+      setProjects(prev => [newProject, ...prev]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al agregar proyecto');
+      throw err;
+    }
   };
 
-  const updateProject = (id: string, updatedData: Partial<Project>) => {
-    setProjects(prev =>
-      prev.map(project =>
-        project.id === id ? { ...project, ...updatedData } : project
-      )
-    );
+  const updateProject = async (id: string, updatedData: Partial<Project>) => {
+    try {
+      setError(null);
+      const updated = await ProjectsService.updateProject(id, updatedData);
+      setProjects(prev =>
+        prev.map(project =>
+          project.id === id ? updated : project
+        )
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar proyecto');
+      throw err;
+    }
   };
 
-  const deleteProject = (id: string) => {
-    setProjects(prev => prev.filter(project => project.id !== id));
+  const deleteProject = async (id: string) => {
+    try {
+      setError(null);
+      await ProjectsService.deleteProject(id);
+      setProjects(prev => prev.filter(project => project.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar proyecto');
+      throw err;
+    }
+  };
+
+  const refreshProjects = async () => {
+    await loadProjects();
   };
 
   return (
-    <ProjectsContext.Provider value={{ projects, addProject, updateProject, deleteProject }}>
+    <ProjectsContext.Provider value={{ 
+      projects, 
+      loading, 
+      error, 
+      addProject, 
+      updateProject, 
+      deleteProject, 
+      refreshProjects 
+    }}>
       {children}
     </ProjectsContext.Provider>
   );

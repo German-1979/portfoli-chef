@@ -1,32 +1,13 @@
-import { ExternalLink, Edit, Trash2, Award } from 'lucide-react';
+import { ExternalLink, Award } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Certification } from '@/types';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 
 interface CertificationCardProps {
   certification: Certification;
-  onEdit?: (certification: Certification) => void;
-  onDelete?: (id: string) => void;
-  showActions?: boolean;
 }
 
-const CertificationCard = ({
-  certification,
-  onEdit,
-  onDelete,
-  showActions = false,
-}: CertificationCardProps) => {
+const CertificationCard = ({ certification }: CertificationCardProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long' });
@@ -35,13 +16,24 @@ const CertificationCard = ({
   return (
     <Card className="gradient-card border-0 shadow-md hover:shadow-glow transition-all duration-300 flex flex-col h-full">
       {/* Imagen de la certificación */}
-      {certification.image ? (
-        <div className="relative h-40 overflow-hidden rounded-t-lg bg-muted flex items-center justify-center">
+      {certification.image_url ? (
+        <div 
+          className="relative h-40 overflow-hidden rounded-t-lg bg-muted flex items-center justify-center group cursor-pointer"
+          title="Pasa el mouse para ampliar"
+        >
           <img
-            src={certification.image}
+            src={certification.image_url}
             alt={certification.name}
-            className="w-full h-full object-contain p-4"
+            className="w-full h-full object-contain p-3 transition-transform duration-300 group-hover:scale-150 group-hover:z-10"
           />
+          {/* Overlay para mejor visibilidad */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 rounded-t-lg"></div>
+          {/* Indicador visual */}
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="bg-black/50 text-white text-xs px-2 py-1 rounded">
+              🔍 Ampliar
+            </div>
+          </div>
         </div>
       ) : (
         <div className="relative h-40 overflow-hidden rounded-t-lg bg-gradient-primary flex items-center justify-center">
@@ -52,16 +44,16 @@ const CertificationCard = ({
       <CardHeader>
         <h3 className="text-lg font-bold line-clamp-2">{certification.name}</h3>
         <p className="text-sm text-muted-foreground">{certification.institution}</p>
-        <p className="text-xs text-muted-foreground">{formatDate(certification.dateObtained)}</p>
+        <p className="text-xs text-muted-foreground">{formatDate(certification.date_obtained)}</p>
       </CardHeader>
 
       <CardContent className="flex-1"></CardContent>
 
       <CardFooter className="flex flex-wrap gap-2">
-        {certification.verificationUrl && (
+        {certification.verification_url && (
           <Button size="sm" variant="default" asChild>
             <a
-              href={certification.verificationUrl}
+              href={certification.verification_url}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -69,39 +61,6 @@ const CertificationCard = ({
               Verificar
             </a>
           </Button>
-        )}
-
-        {showActions && onEdit && (
-          <Button size="sm" variant="outline" onClick={() => onEdit(certification)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </Button>
-        )}
-
-        {showActions && onDelete && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button size="sm" variant="destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Eliminar
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Esta acción no se puede deshacer. Se eliminará permanentemente la
-                  certificación.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onDelete(certification.id)}>
-                  Eliminar
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
         )}
       </CardFooter>
     </Card>

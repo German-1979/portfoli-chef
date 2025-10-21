@@ -1,0 +1,35 @@
+# Tech Context – gerdominweb-app
+
+## Stack Tecnológico
+- **Frontend:** React + TypeScript
+- **Build Tool:** Vite
+- **Estilos:** TailwindCSS + ShadCN/UI + Radix
+- **Animaciones:** Framer Motion
+- **Estado Global:** React Context API o Zustand
+- **Validaciones:** Zod + React Hook Form
+- **Gráficos:** Recharts
+- **Storage:** LocalStorage (sin backend)
+- **Routing:** React Router DOM
+- **Mensajería:** EmailJS o servicio similar
+
+## Configuración de Desarrollo
+- Node >= 18
+- Scripts principales:
+  - `npm run dev` → entorno local
+  - `npm run build` → build para producción
+  - `npm run preview` → revisión previa
+- Deploy inicial vía **Lovable App** (build + hosting integrado).
+
+## Restricciones Técnicas
+- No incluye backend en la versión actual.
+- Persistencia limitada a almacenamiento local.
+- Integración GitHub API opcional (requiere token personal para producción).
+
+## Dependencias Clave
+Incluidas en `package.json`:
+- UI: `@radix-ui/*`, `lucide-react`, `vaul`
+- Validación: `zod`, `@hookform/resolvers`
+- Estado y render: `react`, `react-dom`, `@tanstack/react-query`
+- Build: `vite`, `typescript`
+- Estilos: `tailwindcss`, `tailwind-merge`, `tailwindcss-animate`
+- Utilidades: `clsx`, `date-fns`, `sonner`

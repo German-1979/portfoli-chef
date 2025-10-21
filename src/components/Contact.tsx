@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ContactFormData } from '@/types';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import ContactInfo from './ContactInfo';
+import { EmailService } from '@/services/emailService';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,18 +23,47 @@ const Contact = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     
-    // Simulación de envío de email (aquí integrarías con EmailJS o similar)
     try {
-      // Simular delay de envío
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      console.log('Formulario enviado:', data);
-      toast.success('¡Mensaje enviado correctamente! Te responderé pronto.', {
-        icon: <CheckCircle className="h-5 w-5" />,
+      // Intentar enviar email usando EmailJS
+      const emailSent = await EmailService.sendEmail({
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        message: data.message
       });
-      reset();
+
+      if (emailSent) {
+        toast.success('¡Mensaje enviado correctamente! Te responderé pronto.', {
+          icon: <CheckCircle className="h-5 w-5" />,
+        });
+        reset();
+      } else {
+        throw new Error('No se pudo enviar el email');
+      }
+      
     } catch (error) {
-      toast.error('Hubo un error al enviar el mensaje. Inténtalo de nuevo.');
+      console.error('Error enviando email:', error);
+      
+      // Fallback: usar mailto
+      try {
+        const mailtoLink = await EmailService.createMailtoLink({
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message
+        });
+        
+        // Abrir cliente de email
+        window.open(mailtoLink, '_blank');
+        
+        toast.info('Se abrió tu cliente de email. Completa el envío manualmente.', {
+          duration: 5000,
+        });
+        
+      } catch (fallbackError) {
+        console.error('Error en fallback:', fallbackError);
+        toast.error('Hubo un error al enviar el mensaje. Inténtalo de nuevo.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -56,44 +87,7 @@ const Contact = () => {
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Información de contacto */}
-            <Card className="gradient-card border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Mail className="h-5 w-5 text-primary" />
-                  <span>Información de Contacto</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h4 className="font-semibold mb-2">Email</h4>
-                  <a
-                    href="mailto:tu-email@ejemplo.com"
-                    className="text-primary hover:underline"
-                  >
-                    tu-email@ejemplo.com
-                  </a>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-2">Ubicación</h4>
-                  <p className="text-muted-foreground">Tu Ciudad, País</p>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-2">Disponibilidad</h4>
-                  <p className="text-muted-foreground">
-                    Disponible para proyectos freelance y oportunidades de colaboración
-                  </p>
-                </div>
-
-                <div className="pt-4">
-                  <h4 className="font-semibold mb-4">Descarga mi CV</h4>
-                  <Button className="w-full shadow-glow">
-                    Descargar CV (PDF)
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <ContactInfo />
 
             {/* Formulario de contacto */}
             <Card className="gradient-card border-0 shadow-lg">

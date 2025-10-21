@@ -1,41 +1,85 @@
+import React, { useState, useEffect } from 'react';
 import { Code2, Database, LineChart, Cloud, Brain, GitBranch } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { PersonalDataService } from '@/services/personalDataService';
+import { PersonalData } from '@/types';
 
 const About = () => {
+  const [personalData, setPersonalData] = useState<PersonalData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadPersonalData();
+  }, []);
+
+  const loadPersonalData = async () => {
+    try {
+      const data = await PersonalDataService.getPersonalData();
+      setPersonalData(data);
+    } catch (error) {
+      console.error('Error loading personal data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Descripción por defecto si no hay datos en Supabase
+  const defaultDescription = `Soy un Ingeniero y Analista de Datos apasionado por descubrir insights valiosos 
+  a través del análisis de datos. Con más de X años de experiencia en la industria, 
+  he trabajado en proyectos que abarcan desde análisis exploratorio hasta implementación 
+  de modelos de machine learning en producción. Me especializo en transformar datos 
+  complejos en información accionable que impulsa la toma de decisiones estratégicas.`;
+
+  const description = personalData?.about_description || defaultDescription;
+
   const skills = [
     {
       category: 'Lenguajes',
       icon: Code2,
-      items: ['Python', 'SQL', 'R', 'JavaScript', 'Java'],
+      items: ['Python', 'SQL', 'R', 'PySpark', 'DAX'],
     },
     {
       category: 'Frameworks & Librerías',
       icon: Brain,
-      items: ['Pandas', 'NumPy', 'Scikit-learn', 'TensorFlow', 'PyTorch', 'React'],
+      items: ['Pandas', 'NumPy', 'Scikit-learn', 'TensorFlow', 'PyTorch'],
     },
     {
       category: 'Bases de Datos',
       icon: Database,
-      items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'Snowflake'],
+      items: ['PostgreSQL', 'MySQL', 'MongoDB', 'SQL Server'],
     },
     {
       category: 'Visualización',
       icon: LineChart,
-      items: ['Tableau', 'Power BI', 'Matplotlib', 'Seaborn', 'Plotly'],
+      items: ['Power BI', 'Matplotlib', 'Seaborn', 'Plotly'],
     },
     {
       category: 'Cloud & DevOps',
       icon: Cloud,
-      items: ['AWS', 'Azure', 'GCP', 'Docker', 'Kubernetes'],
+      items: ['Azure', 'GCP', 'Docker', 'Kubernetes'],
     },
     {
       category: 'Control de Versiones',
       icon: GitBranch,
-      items: ['Git', 'GitHub', 'GitLab', 'CI/CD'],
+      items: ['Git', 'GitHub', 'CI/CD'],
     },
   ];
+
+  const handleDownloadCV = async () => {
+    try {
+      const cvUrl = await PersonalDataService.getCVUrl();
+      if (cvUrl) {
+        window.open(cvUrl, '_blank');
+      } else {
+        alert('CV no disponible. Por favor configura la URL del CV en el panel de administración.');
+      }
+    } catch (error) {
+      console.error('Error downloading CV:', error);
+      alert('Error al descargar el CV');
+    }
+  };
 
   return (
     <section id="sobre-mi" className="py-20 bg-muted/30">
@@ -53,11 +97,7 @@ const About = () => {
           <Card className="gradient-card border-0 shadow-lg animate-fade-in-up">
             <CardContent className="p-8">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Soy un Ingeniero y Analista de Datos apasionado por descubrir insights valiosos 
-                a través del análisis de datos. Con más de X años de experiencia en la industria, 
-                he trabajado en proyectos que abarcan desde análisis exploratorio hasta implementación 
-                de modelos de machine learning en producción. Me especializo en transformar datos 
-                complejos en información accionable que impulsa la toma de decisiones estratégicas.
+                {description}
               </p>
             </CardContent>
           </Card>
@@ -97,13 +137,6 @@ const About = () => {
                 );
               })}
             </div>
-          </div>
-
-          {/* Call to Action - Descargar CV */}
-          <div className="text-center pt-8">
-            <Button size="lg" className="shadow-glow">
-              Descargar CV Completo
-            </Button>
           </div>
         </div>
       </div>
