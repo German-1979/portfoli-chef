@@ -114,7 +114,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-border text-center">
           <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
             © {currentYear} Profesional. Hecho con{' '}
-            <Heart className="h-4 w-4 text-destructive fill-current" /> por Tu Nombre
+            <Heart className="h-4 w-4 text-destructive fill-current" /> por Germán
           </p>
         </div>
       </div>

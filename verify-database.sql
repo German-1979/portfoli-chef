@@ -46,3 +46,4 @@ WHERE hero_description IS NULL OR about_description IS NULL;
 
 
 
+
