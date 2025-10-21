@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Github, RefreshCw, CheckCircle, AlertCircle, Star, Calendar } from 'lucide-react';
 import { useGitHubIntegration } from '@/hooks/useGitHubIntegration';
+import { GitHubService } from '@/services/githubService';
 import { toast } from 'sonner';
 
 export function GitHubConfigPanel() {

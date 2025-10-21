@@ -20,23 +20,36 @@ export class GitHubService {
 
   // Crear o actualizar configuración de GitHub
   static async upsertGitHubConfig(config: Omit<GitHubConfig, 'id' | 'created_at' | 'updated_at'>): Promise<GitHubConfig> {
-    const { data, error } = await supabase
-      .from('github_config')
-      .upsert({
-        ...config,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'id'
-      })
-      .select()
-      .single();
+    console.log('🔄 Upserting GitHub config:', config);
+    
+    try {
+      const { data, error } = await supabase
+        .from('github_config')
+        .upsert({
+          ...config,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
+        })
+        .select()
+        .single();
 
-    if (error) {
-      console.error('Error upserting GitHub config:', error);
+      if (error) {
+        console.error('❌ Error upserting GitHub config:', error);
+        throw error;
+      }
+
+      console.log('✅ GitHub config upserted successfully:', data);
+      
+      // Verificar que los datos se guardaron correctamente
+      const verificationData = await this.getGitHubConfig();
+      console.log('🔍 Verification data:', verificationData);
+      
+      return data;
+    } catch (error) {
+      console.error('💥 Critical error in upsertGitHubConfig:', error);
       throw error;
     }
-
-    return data;
   }
 
   // Obtener información del usuario de GitHub

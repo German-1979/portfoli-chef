@@ -22,83 +22,98 @@ export class PersonalDataService {
 
   // Crear o actualizar datos personales
   static async upsertPersonalData(personalData: Omit<PersonalData, 'id' | 'created_at' | 'updated_at'>): Promise<PersonalData> {
-    console.log('Upserting personal data:', personalData); // Debug log
+    console.log('🔄 Upserting personal data:', personalData); // Debug log
     
-    // Primero intentar obtener datos existentes
-    const existingData = await this.getPersonalData();
-    
-    if (existingData) {
-      // Actualizar datos existentes
-      console.log('Updating existing data with ID:', existingData.id);
+    try {
+      // Primero intentar obtener datos existentes
+      const existingData = await this.getPersonalData();
       
-      // Preparar datos para actualización, asegurando que todos los campos estén incluidos
-      const updateData = {
-        full_name: personalData.full_name,
-        profession: personalData.profession,
-        hero_description: personalData.hero_description || null,
-        about_description: personalData.about_description || null,
-        email: personalData.email || null,
-        phone: personalData.phone || null,
-        whatsapp_number: personalData.whatsapp_number || null,
-        linkedin_url: personalData.linkedin_url || null,
-        github_username: personalData.github_username || null,
-        cv_url: personalData.cv_url || null,
-        profile_image_url: personalData.profile_image_url || null,
-        updated_at: new Date().toISOString()
-      };
-      
-      console.log('Update data prepared:', updateData);
-      
-      const { data, error } = await supabase
-        .from('personal_data')
-        .update(updateData)
-        .eq('id', existingData.id)
-        .select()
-        .single();
+      if (existingData) {
+        // Actualizar datos existentes
+        console.log('📝 Updating existing data with ID:', existingData.id);
+        
+        // Preparar datos para actualización, asegurando que todos los campos estén incluidos
+        const updateData = {
+          full_name: personalData.full_name,
+          profession: personalData.profession,
+          hero_description: personalData.hero_description || null,
+          about_description: personalData.about_description || null,
+          email: personalData.email || null,
+          phone: personalData.phone || null,
+          whatsapp_number: personalData.whatsapp_number || null,
+          linkedin_url: personalData.linkedin_url || null,
+          github_username: personalData.github_username || null,
+          cv_url: personalData.cv_url || null,
+          profile_image_url: personalData.profile_image_url || null,
+          updated_at: new Date().toISOString()
+        };
+        
+        console.log('📤 Update data prepared:', updateData);
+        
+        const { data, error } = await supabase
+          .from('personal_data')
+          .update(updateData)
+          .eq('id', existingData.id)
+          .select()
+          .single();
 
-      if (error) {
-        console.error('Error updating personal data:', error);
-        throw error;
+        if (error) {
+          console.error('❌ Error updating personal data:', error);
+          throw error;
+        }
+
+        console.log('✅ Personal data updated successfully:', data);
+        
+        // Verificar que los datos se guardaron correctamente
+        const verificationData = await this.getPersonalData();
+        console.log('🔍 Verification data:', verificationData);
+        
+        return data;
+      } else {
+        // Crear nuevos datos
+        console.log('🆕 Creating new personal data');
+        
+        // Preparar datos para inserción
+        const insertData = {
+          full_name: personalData.full_name,
+          profession: personalData.profession,
+          hero_description: personalData.hero_description || null,
+          about_description: personalData.about_description || null,
+          email: personalData.email || null,
+          phone: personalData.phone || null,
+          whatsapp_number: personalData.whatsapp_number || null,
+          linkedin_url: personalData.linkedin_url || null,
+          github_username: personalData.github_username || null,
+          cv_url: personalData.cv_url || null,
+          profile_image_url: personalData.profile_image_url || null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        console.log('📤 Insert data prepared:', insertData);
+        
+        const { data, error } = await supabase
+          .from('personal_data')
+          .insert(insertData)
+          .select()
+          .single();
+
+        if (error) {
+          console.error('❌ Error creating personal data:', error);
+          throw error;
+        }
+
+        console.log('✅ Personal data created successfully:', data);
+        
+        // Verificar que los datos se guardaron correctamente
+        const verificationData = await this.getPersonalData();
+        console.log('🔍 Verification data:', verificationData);
+        
+        return data;
       }
-
-      console.log('Personal data updated successfully:', data);
-      return data;
-    } else {
-      // Crear nuevos datos
-      console.log('Creating new personal data');
-      
-      // Preparar datos para inserción
-      const insertData = {
-        full_name: personalData.full_name,
-        profession: personalData.profession,
-        hero_description: personalData.hero_description || null,
-        about_description: personalData.about_description || null,
-        email: personalData.email || null,
-        phone: personalData.phone || null,
-        whatsapp_number: personalData.whatsapp_number || null,
-        linkedin_url: personalData.linkedin_url || null,
-        github_username: personalData.github_username || null,
-        cv_url: personalData.cv_url || null,
-        profile_image_url: personalData.profile_image_url || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      console.log('Insert data prepared:', insertData);
-      
-      const { data, error } = await supabase
-        .from('personal_data')
-        .insert(insertData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating personal data:', error);
-        throw error;
-      }
-
-      console.log('Personal data created successfully:', data);
-      return data;
+    } catch (error) {
+      console.error('💥 Critical error in upsertPersonalData:', error);
+      throw error;
     }
   }
 

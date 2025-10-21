@@ -80,7 +80,7 @@ const ContactInfo = () => {
         <div>
           <h4 className="font-semibold mb-2">Disponibilidad</h4>
           <p className="text-muted-foreground">
-            Disponible para proyectos freelance y oportunidades de colaboración
+            Proyectos freelance, oportunidades de colaboración y contratación directa
           </p>
         </div>
 

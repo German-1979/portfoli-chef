@@ -19,7 +19,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     >
       {/* Imagen del proyecto */}
       {project.image_url && (
-        <div className="relative h-48 overflow-hidden rounded-t-lg">
+        <div className="relative h-40 overflow-hidden rounded-t-lg">
           <img
             src={project.image_url}
             alt={project.name}

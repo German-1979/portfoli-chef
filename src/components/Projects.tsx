@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Filter } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useProjects } from '@/contexts/ProjectsContext';
 import ProjectCard from './ProjectCard';
 
@@ -22,11 +23,11 @@ const Projects = () => {
   });
 
   return (
-    <section id="proyectos" className="py-20">
+    <section id="proyectos" className="py-12 sm:py-20">
       <div className="container mx-auto px-4">
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
           {/* Encabezado */}
-          <div className="text-center space-y-4 animate-fade-in">
+          <div className="text-center space-y-3 sm:space-y-4 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold">
               Mis <span className="text-gradient">Proyectos</span>
             </h2>
@@ -76,14 +77,47 @@ const Projects = () => {
 
           {/* Grid de proyectos */}
           {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                />
-              ))}
-            </div>
+            <>
+              {/* Mobile Carousel */}
+              <div className="md:hidden">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {filteredProjects.map((project) => (
+                      <CarouselItem key={project.id} className="basis-full">
+                        <div className="h-[320px]">
+                          <ProjectCard project={project} />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="hidden" />
+                  <CarouselNext className="hidden" />
+                </Carousel>
+                
+                {/* Mobile indicators */}
+                <div className="flex justify-center mt-4 space-x-2">
+                  {filteredProjects.map((_, index) => (
+                    <div
+                      key={index}
+                      className="w-2 h-2 rounded-full bg-primary/30"
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  Desliza para ver más proyectos
+                </p>
+              </div>
+
+              {/* Desktop Grid */}
+              <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProjects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                  />
+                ))}
+              </div>
+            </>
           ) : (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">

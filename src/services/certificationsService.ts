@@ -35,35 +35,58 @@ export class CertificationsService {
 
   // Crear una nueva certificación
   static async createCertification(certification: Omit<Certification, 'id' | 'created_at' | 'updated_at'>): Promise<Certification> {
-    const { data, error } = await supabase
-      .from('certifications')
-      .insert(certification)
-      .select()
-      .single();
+    console.log('🔄 Creating certification:', certification);
+    
+    try {
+      const { data, error } = await supabase
+        .from('certifications')
+        .insert({
+          ...certification,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
 
-    if (error) {
-      console.error('Error creating certification:', error);
+      if (error) {
+        console.error('❌ Error creating certification:', error);
+        throw error;
+      }
+
+      console.log('✅ Certification created successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('💥 Critical error in createCertification:', error);
       throw error;
     }
-
-    return data;
   }
 
   // Actualizar una certificación
   static async updateCertification(id: string, updates: Partial<Certification>): Promise<Certification> {
-    const { data, error } = await supabase
-      .from('certifications')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single();
+    console.log('🔄 Updating certification:', id, updates);
+    
+    try {
+      const { data, error } = await supabase
+        .from('certifications')
+        .update({ 
+          ...updates, 
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', id)
+        .select()
+        .single();
 
-    if (error) {
-      console.error('Error updating certification:', error);
+      if (error) {
+        console.error('❌ Error updating certification:', error);
+        throw error;
+      }
+
+      console.log('✅ Certification updated successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('💥 Critical error in updateCertification:', error);
       throw error;
     }
-
-    return data;
   }
 
   // Eliminar una certificación

@@ -14,7 +14,7 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
   };
 
   return (
-    <Card className="gradient-card border-0 shadow-md hover:shadow-glow transition-all duration-300 flex flex-col h-full">
+    <Card className="gradient-card border-0 shadow-md hover:shadow-glow transition-all duration-300 flex flex-col h-[400px]">
       {/* Imagen de la certificación */}
       {certification.image_url ? (
         <div 
@@ -41,15 +41,15 @@ const CertificationCard = ({ certification }: CertificationCardProps) => {
         </div>
       )}
 
-      <CardHeader>
-        <h3 className="text-lg font-bold line-clamp-2">{certification.name}</h3>
-        <p className="text-sm text-muted-foreground">{certification.institution}</p>
-        <p className="text-xs text-muted-foreground">{formatDate(certification.date_obtained)}</p>
+      <CardHeader className="pb-2 flex-shrink-0">
+        <h3 className="text-sm font-bold line-clamp-3 leading-tight h-[60px] flex items-start overflow-hidden">{certification.name}</h3>
+        <p className="text-xs text-muted-foreground mt-2 h-[16px]">{certification.institution}</p>
+        <p className="text-xs text-muted-foreground h-[16px]">{formatDate(certification.date_obtained)}</p>
       </CardHeader>
 
       <CardContent className="flex-1"></CardContent>
 
-      <CardFooter className="flex flex-wrap gap-2">
+      <CardFooter className="flex flex-wrap gap-2 pt-2 flex-shrink-0">
         {certification.verification_url && (
           <Button size="sm" variant="default" asChild>
             <a

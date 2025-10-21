@@ -61,17 +61,9 @@ const Footer = () => {
   return (
     <footer className="bg-muted/30 border-t border-border">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Columna 1 - Marca */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-gradient">Profesional</h3>
-            <p className="text-sm text-muted-foreground">
-              Ingeniero y Analista de Datos apasionado por transformar datos en insights accionables.
-            </p>
-          </div>
-
-          {/* Columna 2 - Enlaces rápidos */}
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 max-w-4xl mx-auto">
+          {/* Columna 1 - Enlaces rápidos */}
+          <div className="space-y-4 text-center">
             <h4 className="font-semibold">Enlaces Rápidos</h4>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
@@ -87,10 +79,10 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Columna 3 - Redes sociales */}
-          <div className="space-y-4">
+          {/* Columna 2 - Redes sociales */}
+          <div className="space-y-4 text-center">
             <h4 className="font-semibold">Sígueme</h4>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 justify-center">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
