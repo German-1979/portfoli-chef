@@ -1,0 +1,20 @@
+# Active Context – gerdominweb-app
+
+## Enfoque actual
+Optimizar la estructura del código y documentación contextual para mejorar el rendimiento de Cursor AI como entorno de desarrollo asistido.
+
+## Cambios recientes
+- Estandarización del stack basado en `vite + react + tailwind + typescript`.
+- Incorporación de Radix UI, React Hook Form y Zustand/Context API para gestión de estado.
+- Adición de animaciones suaves con Framer Motion.
+- Creación de esta estructura de "Memory Bank" para mantener coherencia contextual.
+
+## Próximos pasos
+1. Integrar CRUD funcional completo (Proyectos, Certificaciones).
+2. Añadir autenticación básica para panel admin.
+3. Implementar integración con la API de GitHub.
+4. Agregar analíticas básicas de visitas y proyectos.
+
+## Decisiones activas
+- Mantener el almacenamiento local (LocalStorage) para persistencia temporal.
+- Evaluar integración de un backend ligero (Firebase o Supabase) en etapa 2.
