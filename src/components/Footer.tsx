@@ -1,28 +1,57 @@
-import { Github, Linkedin, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Heart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { PersonalDataService } from '@/services/personalDataService';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
+  const [socialLinks, setSocialLinks] = useState([
     {
       name: 'GitHub',
       icon: Github,
-      url: 'https://github.com/tu-usuario',
+      url: 'https://github.com/German-1979',
     },
     {
       name: 'LinkedIn',
       icon: Linkedin,
-      url: 'https://linkedin.com/in/tu-perfil',
+      url: 'https://www.linkedin.com/in/gerdoming/',
     },
-    {
-      name: 'Email',
-      icon: Mail,
-      url: 'mailto:tu-email@ejemplo.com',
-    },
-  ];
+  ]);
+
+  useEffect(() => {
+    const loadPersonalData = async () => {
+      try {
+        const personalData = await PersonalDataService.getPersonalData();
+        if (personalData) {
+          const updatedLinks = [];
+          
+          if (personalData.github_username) {
+            updatedLinks.push({
+              name: 'GitHub',
+              icon: Github,
+              url: `https://github.com/${personalData.github_username}`,
+            });
+          }
+          
+          if (personalData.linkedin_url) {
+            updatedLinks.push({
+              name: 'LinkedIn',
+              icon: Linkedin,
+              url: personalData.linkedin_url,
+            });
+          }
+          
+          setSocialLinks(updatedLinks);
+        }
+      } catch (error) {
+        console.error('Error loading personal data:', error);
+      }
+    };
+
+    loadPersonalData();
+  }, []);
 
   const quickLinks = [
-    { name: 'Inicio', href: '#inicio' },
+    { name: 'Inicio', href: '#hero' },
     { name: 'Sobre Mí', href: '#sobre-mi' },
     { name: 'Proyectos', href: '#proyectos' },
     { name: 'Certificaciones', href: '#certificaciones' },
@@ -35,7 +64,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Columna 1 - Marca */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-gradient">Portfolio</h3>
+            <h3 className="text-xl font-bold text-gradient">Profesional</h3>
             <p className="text-sm text-muted-foreground">
               Ingeniero y Analista de Datos apasionado por transformar datos en insights accionables.
             </p>
@@ -84,7 +113,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="pt-8 border-t border-border text-center">
           <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
-            © {currentYear} Portfolio. Hecho con{' '}
+            © {currentYear} Profesional. Hecho con{' '}
             <Heart className="h-4 w-4 text-destructive fill-current" /> por Tu Nombre
           </p>
         </div>

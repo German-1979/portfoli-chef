@@ -40,7 +40,14 @@ export function WhatsAppButton({
 
   const handleClick = () => {
     if (whatsappUrl) {
-      window.open(whatsappUrl, '_blank');
+      // Usar createElement en lugar de window.open para evitar bloqueos de CSP
+      const link = document.createElement('a');
+      link.href = whatsappUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
       alert('Número de WhatsApp no configurado');
     }
@@ -175,10 +182,26 @@ export function useWhatsApp() {
   const openWhatsApp = React.useCallback((message?: string) => {
     if (message) {
       getWhatsAppUrl(message).then(url => {
-        if (url) window.open(url, '_blank');
+        if (url) {
+          // Usar createElement en lugar de window.open para evitar bloqueos de CSP
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       });
     } else if (whatsappUrl) {
-      window.open(whatsappUrl, '_blank');
+      // Usar createElement en lugar de window.open para evitar bloqueos de CSP
+      const link = document.createElement('a');
+      link.href = whatsappUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   }, [whatsappUrl, getWhatsAppUrl]);
 

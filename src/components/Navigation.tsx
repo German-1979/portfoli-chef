@@ -17,7 +17,7 @@ const Navigation = () => {
   }, []);
 
   const navLinks = [
-    { href: '#inicio', label: 'Inicio' },
+    { href: '#hero', label: 'Inicio' },
     { href: '#sobre-mi', label: 'Sobre Mí' },
     { href: '#proyectos', label: 'Proyectos' },
     { href: '#certificaciones', label: 'Certificaciones' },
@@ -33,12 +33,7 @@ const Navigation = () => {
       }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <a href="#inicio" className="text-xl font-bold text-gradient">
-            Portfolio
-          </a>
-
+        <div className="flex items-center justify-center h-16 relative">
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
@@ -50,6 +45,10 @@ const Navigation = () => {
                 {link.label}
               </a>
             ))}
+          </div>
+          
+          {/* Theme Toggle */}
+          <div className="absolute right-4 md:right-8 flex items-center">
             <Button
               variant="ghost"
               size="icon"
@@ -61,15 +60,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              aria-label="Cambiar tema"
-            >
-              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </Button>
+          <div className="md:hidden flex items-center absolute right-4">
             <Button
               variant="ghost"
               size="icon"
@@ -94,6 +85,18 @@ const Navigation = () => {
                 {link.label}
               </a>
             ))}
+            <div className="pt-4 border-t border-border">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+                aria-label="Cambiar tema"
+                className="w-full justify-start"
+              >
+                {theme === 'light' ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
+                {theme === 'light' ? 'Modo Oscuro' : 'Modo Claro'}
+              </Button>
+            </div>
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-# Portfolio Chef - Portafolio Profesional con React + Supabase
+# Profesional Chef - Sitio Profesional con React + Supabase
 
 Un portafolio profesional moderno construido con React, TypeScript, Tailwind CSS y Supabase, que incluye integración con GitHub, gestión de certificaciones, sistema de contacto y panel de administración.
 

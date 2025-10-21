@@ -1,4 +1,4 @@
-# Configuración de Email Automático para Portfolio
+# Configuración de Email Automático para Sitio Profesional
 
 ## ✅ Estado Actual
 El formulario de contacto ya está configurado para enviar emails automáticamente a **germandominguezc@gmail.com**.
@@ -35,7 +35,7 @@ Subject: Nuevo mensaje de contacto - {{subject}}
 
 Hola,
 
-Has recibido un nuevo mensaje de contacto desde tu portfolio:
+Has recibido un nuevo mensaje de contacto desde tu sitio profesional:
 
 Nombre: {{from_name}}
 Email: {{from_email}}
@@ -48,7 +48,7 @@ Mensaje:
 Puedes responder directamente a este email para contactar al remitente.
 
 Saludos,
-Tu Portfolio
+Tu Sitio Profesional
 ```
 
 4. Copia el **Template ID** (ej: `template_xyz789`)
@@ -87,7 +87,7 @@ npm run dev
 
 ## 📱 Prueba del Sistema
 
-1. Ve a la sección de contacto en tu portfolio
+1. Ve a la sección de contacto en tu sitio profesional
 2. Llena el formulario con datos de prueba
 3. Haz clic en "Enviar mensaje"
 4. Verifica que:

@@ -1,4 +1,4 @@
-# Portfolio Chef - Instrucciones para Visual Studio Code
+# Profesional Chef - Instrucciones para Visual Studio Code
 
 ## Configuración inicial
 
@@ -34,7 +34,7 @@ npm run dev
 
 ## Funcionalidades principales
 
-1. **Portfolio personal** con información profesional
+1. **Sitio personal** con información profesional
 2. **Panel de administración** para gestionar:
    - Datos personales
    - Proyectos

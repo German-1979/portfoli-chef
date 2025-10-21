@@ -1,4 +1,4 @@
-// Tipos para el sistema de gestión del portfolio con Supabase
+// Tipos para el sistema de gestión del sitio profesional con Supabase
 
 export interface Project {
   id: string;
